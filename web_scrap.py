@@ -1,5 +1,5 @@
 import fdb
-from casio_wapis import casio
+from casio_wapis_2 import casio
 # from rhythm_b2b import rhythm
 
 # # Conectando a la BBDD
@@ -24,8 +24,8 @@ for item in items:
 
     if marca == '1':
         modelo = casio(item)
-    elif marca == '2':
-        modelo = rhythm(item)
+    # elif marca == '2':
+        # modelo = rhythm(item)
 
     if modelo:
         print("Se han recogido los datos del modelo {} correctamente".format(item))
