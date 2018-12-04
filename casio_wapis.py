@@ -2,11 +2,8 @@ import psycopg2
 from requests_html import HTMLSession
 import os
 from pathlib import Path
-# import urllib.request
-# import urllib
 import base64
 
-# item = 'GBD-800-1ER'
 
 def casio(item):
     # Consiguiendo el HTML real
@@ -89,12 +86,12 @@ def casio(item):
         modelo['Categoria'] = cat
 
 
+            # Funciones
         try:
             os.mkdir(item + '/funciones')
         except:
             print("La carpeta para las funciones del articulo {} ya existe".format(item))
 
-            # Funciones
         funciones = {}
         div_func = bigdiv[4]
         table_func = div_func.find('table > tr > td > table > tr')
@@ -149,7 +146,6 @@ def casio(item):
             conn.commit()
             cur.execute('INSERT INTO reloj_funcion (id_reloj, id_funcion) VALUES ( %s, %s) ON CONFLICT (id_reloj, id_funcion) DO NOTHING', (id_modelo, id_funcion))
             conn.commit()
-        # conn.commit()
 
         #      # Imagenes de funciones
         # table_img_func = bigdiv[3]
@@ -175,9 +171,6 @@ def casio(item):
 
         conn.close()
 
-        # print(modelo)
         return modelo
     else:
         return None
-
-# casio(item)
