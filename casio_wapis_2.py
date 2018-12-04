@@ -40,6 +40,7 @@ def casio(item):
         div_func = bigdiv[4]
         table_func = div_func.find('table > tr > td > table > tr')
         for func in table_func:
+            func_list = []
             img_td = func.find('td')[1]
             img_attrs = img_td.attrs
             img_html_split = img_attrs['style'].split(';')
@@ -47,15 +48,20 @@ def casio(item):
             img_url = img_url_split[0].replace('background:url(', '')
             img_name = img_url.replace('http://wapis.casio-europe.com/bilderordner/pictoidbilder/', '')
             img_name_func = img_name.replace('.jpg', '')
+            funciones['img_name_func'] = img_name_func
             func_path = item + '/funciones/' + img_name 
+            funciones['func_path'] = func_path
             try:
-                func_file = open(Path(func_path), 'wb')
                 data2 = session.get(img_url)
+                func_b64 = base64.b64encode(data2.content)
+                func_file = open(Path(func_path), 'wb')
                 func_file.write(data2.content)
                 func_file.close()
             except:
                 print('No hay foto de funcion')
+                func_b64 = ''
             print(img_name_func)
+            funciones['func_b64'] = func_b64
             titulo_func_a = func.find('a > b', first=True)
             desc_func_a = func.find('div.unsichtbar > div', first=True)
             titulo_func_b = func.find('td > b', first=True)
@@ -66,35 +72,14 @@ def casio(item):
             if titulo_func_a:
                 titulo = titulo_func_a.text
                 desc = desc_func_a.text
-                funciones[titulo] = desc
+                func_list.extend((desc,img_name_func,img_url,func_b64))
+                funciones[titulo] = func_list
             else:
                 titulo = titulo_func_b.text
                 desc = desc_func_final
-                funciones[titulo] = desc
-
-
-    
-
-        #      # Imagenes de funciones
-        # table_img_func = bigdiv[3]
-        # img_tags = table_img_func.find('img')
-        # try:
-        #     os.mkdir(item + '/funciones')
-        # except:
-        #     print("La carpeta para las funciones del articulo {} ya existe".format(item))
-
-        # for img in img_tags:
-        #     alt_img = img.attrs['alt']
-        #     src_img = img.attrs['src']
-        #     func_filename = item + '/funciones/' + alt_img + '.jpg'
-        #     try:
-        #         func_file.write(urllib.request.urlopen(src_img).read())
-        #     except:
-        #         print("La imagen de la función {} ya existe".format(alt_img))
-        #     func_file.close()
-
-
-        # print(modelo)
+                func_list.extend((desc,img_name_func,img_url,func_b64))
+                funciones[titulo] = func_list
+        print(funciones['Iluminación de la pantalla'][0])
         return modelo
     else:
         return None

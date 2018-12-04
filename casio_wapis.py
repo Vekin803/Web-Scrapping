@@ -89,31 +89,33 @@ def casio(item):
         modelo['Categoria'] = cat
 
 
+        try:
+            os.mkdir(item + '/funciones')
+        except:
+            print("La carpeta para las funciones del articulo {} ya existe".format(item))
+
             # Funciones
         funciones = {}
         div_func = bigdiv[4]
         table_func = div_func.find('table > tr > td > table > tr')
         for func in table_func:
+            func_list = []
             img_td = func.find('td')[1]
             img_attrs = img_td.attrs
             img_html_split = img_attrs['style'].split(';')
             img_url_split = img_html_split[3].split(')')
             img_url = img_url_split[0].replace('background:url(', '')
-            funciones['img_url'] = img_url
-            data2 = session.get(img_url)
-            func_b64 = base64.b64encode(data2.content)
-            funciones['func_b64'] = func_b64
             img_name = img_url.replace('http://wapis.casio-europe.com/bilderordner/pictoidbilder/', '')
             img_name_func = img_name.replace('.jpg', '')
             func_path = item + '/funciones/' + img_name 
-            funciones['func_path'] = func_path
             try:
+                data2 = session.get(img_url)
+                func_b64 = base64.b64encode(data2.content)
                 func_file = open(Path(func_path), 'wb')
                 func_file.write(data2.content)
                 func_file.close()
             except:
-                print('No hay foto de funcion')
-            print(img_name_func)
+                func_b64 = ''
             titulo_func_a = func.find('a > b', first=True)
             desc_func_a = func.find('div.unsichtbar > div', first=True)
             titulo_func_b = func.find('td > b', first=True)
@@ -124,11 +126,13 @@ def casio(item):
             if titulo_func_a:
                 titulo = titulo_func_a.text
                 desc = desc_func_a.text
-                funciones[titulo] = desc
+                func_list.extend((desc,img_name_func,func_path,func_b64))
+                funciones[titulo] = func_list
             else:
                 titulo = titulo_func_b.text
                 desc = desc_func_final
-                funciones[titulo] = desc
+                func_list.extend((desc,img_name_func,img_url,func_b64))
+                funciones[titulo] = func_list
 
 
         conn = psycopg2.connect(host='192.168.1.252', database='casio', user='postgres', password='Mgv17Watch')
@@ -140,7 +144,7 @@ def casio(item):
         
         for func in funciones.keys():
             cur.execute('INSERT INTO funcion (nombre, descripcion, img_name, img_url, img_blob) VALUES ( %s, %s, %s, %s, %s) ON CONFLICT (nombre) DO UPDATE SET descripcion = EXCLUDED.descripcion, img_name = EXCLUDED.img_name, img_url = EXCLUDED.img_url, img_blob = EXCLUDED.img_blob RETURNING id', 
-                        (func, funciones[func], funciones['img_name_func'], funciones['func_path'], funciones['func_b64']))
+                        (func, funciones[func][0], funciones[func][1], funciones[func][2], funciones[func][3]))
             id_funcion = cur.fetchone()[0]
             conn.commit()
             cur.execute('INSERT INTO reloj_funcion (id_reloj, id_funcion) VALUES ( %s, %s) ON CONFLICT (id_reloj, id_funcion) DO NOTHING', (id_modelo, id_funcion))
