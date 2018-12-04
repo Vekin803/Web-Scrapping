@@ -1,5 +1,5 @@
 import fdb
-from casio_wapis_2 import casio
+from casio_wapis import casio
 # from rhythm_b2b import rhythm
 
 # # Conectando a la BBDD
