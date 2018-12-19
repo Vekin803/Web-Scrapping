@@ -17,10 +17,16 @@ def casio(item):
     if existe:
         print('{}'.format(item))
         # Creando la carpeta
-        try:
-            os.mkdir(item)
-        except:
+        # try:
+        #     os.mkdir(item)
+        # except:
+        #     print("La carpeta del articulo {} ya existe".format(item))
+
+        if os.path.exists(Path(item)):
             print("La carpeta del articulo {} ya existe".format(item))
+        else:
+            os.mkdir(item)
+
 
         # Coger el div general
         bigdiv = html.find('div.rahmen')
@@ -44,13 +50,22 @@ def casio(item):
         # fh.close()
 
              # Creando el archivo de la imagen
-        try:
-            img_file = open(Path(filename), 'wb')
-            img_file.write(data.content)
-            img_file.close()
-        except:
-            print("La imagen del articulo {} no existe".format(item))
+        # try:
+        #     img_file = open(Path(filename), 'wb')
+        #     img_file.write(data.content)
+        #     img_file.close()
+        # except:
+        #     print("La imagen del articulo {} no existe".format(item))
 
+        if os.path.exists(Path(filename)):
+            print("La imagen del articulo {} ya existe".format(item))
+        else:
+            try:
+                img_file = open(Path(filename), 'wb')
+                img_file.write(data.content)
+                img_file.close()
+            except:
+                print("La imagen del articulo {} no existe".format(item))
 
         # Recopilando los datos del modelo
              # Referencia
@@ -87,10 +102,15 @@ def casio(item):
 
 
             # Funciones
-        try:
-            os.mkdir(item + '/funciones')
-        except:
-            print("La carpeta para las funciones del articulo {} ya existe".format(item))
+        # try:
+        #     os.mkdir(item + '/funciones')
+        # except:
+        #     print("La carpeta para las funciones del articulo {} ya existe".format(item))
+
+        if os.path.exists(Path('funciones')):
+            print("La carpeta funciones del articulo {} ya existe".format(item))
+        else:
+            os.mkdir('funciones')
 
         funciones = {}
         div_func = bigdiv[4]
@@ -104,15 +124,25 @@ def casio(item):
             img_url = img_url_split[0].replace('background:url(', '')
             img_name = img_url.replace('http://wapis.casio-europe.com/bilderordner/pictoidbilder/', '')
             img_name_func = img_name.replace('.jpg', '')
-            func_path = item + '/funciones/' + img_name 
-            try:
-                data2 = session.get(img_url)
-                func_b64 = base64.b64encode(data2.content)
-                func_file = open(Path(func_path), 'wb')
-                func_file.write(data2.content)
-                func_file.close()
-            except:
-                func_b64 = ''
+            func_path = 'funciones/' + img_name
+
+            if os.path.exists(Path(func_path)):
+                try:
+                    data2 = session.get(img_url)
+                    func_b64 = base64.b64encode(data2.content)
+                    print('La imagen de la funcion {} ya existe'.format(img_name_func))
+                except:
+                    func_b64 = ''
+            else:
+                try:
+                    data2 = session.get(img_url)
+                    func_b64 = base64.b64encode(data2.content)
+                    func_file = open(Path(func_path), 'wb')
+                    func_file.write(data2.content)
+                    func_file.close()
+                except:
+                    func_b64 = ''
+
             titulo_func_a = func.find('a > b', first=True)
             desc_func_a = func.find('div.unsichtbar > div', first=True)
             titulo_func_b = func.find('td > b', first=True)
