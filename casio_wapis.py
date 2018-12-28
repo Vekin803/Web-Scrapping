@@ -8,7 +8,7 @@ import base64
 def casio(item):
     # Consiguiendo el HTML real
     session = HTMLSession()
-    r = session.get("http://www.css2.casio.de/servicewapis/_details.php?watch={}&stamp=&language=es".format(item))
+    r = session.get("https://www.css2.casio.de/servicewapis/_details.php?watch='{}'&stamp=&language=es".format(item), verify = False)
     html = r.html
 
     existe = html.find(containing='Recommended retail price EU', first=True)
@@ -90,16 +90,7 @@ def casio(item):
         modelo['Categoria'] = cat
 
 
-            # Funciones
-        # try:
-        #     os.mkdir(item + '/funciones')
-        # except:
-        #     print("La carpeta para las funciones del articulo {} ya existe".format(item))
-
-        if os.path.exists(Path('funciones')):
-            print("La carpeta funciones del articulo {} ya existe".format(item))
-        else:
-            os.mkdir('funciones')
+        # Recogiendo y creando Funciones       
 
         funciones = {}
         div_func = bigdiv[4]
@@ -114,11 +105,12 @@ def casio(item):
             img_name = img_url.replace('http://wapis.casio-europe.com/bilderordner/pictoidbilder/', '')
             img_name_func = img_name.replace('.jpg', '')
             func_path = 'funciones/' + img_name
+            
 
-            if os.path.exists(Path(func_path)):
+            if os.path.exists(Path(rutaFunciones + "\\" + img_name)):
                 try:
                     data2 = session.get(img_url)
-                    func_b64 = base64.b64encode(data2.content)
+                    func_b64 = base64.b64encode(data2.content)                    
                     print('La imagen de la funcion {} ya existe'.format(img_name_func))
                 except:
                     func_b64 = ''
@@ -126,7 +118,7 @@ def casio(item):
                 try:
                     data2 = session.get(img_url)
                     func_b64 = base64.b64encode(data2.content)
-                    func_file = open(Path(func_path), 'wb')
+                    func_file = open(Path(rutaFunciones + "\\" + img_name), 'wb')
                     func_file.write(data2.content)
                     func_file.close()
                 except:

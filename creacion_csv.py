@@ -7,7 +7,7 @@ modelo = 'A158WEA-1EF'
 
 
  # Conexion a la base de datos de Elite
-connect = fdb.connect(dsn='192.168.1.252:W:\STECCS_MGV_TEST.FDB',
+connect = fdb.connect(dsn='192.168.1.252:W:\\STECCS_MGV_TEST.FDB',
                   user='sysdba',
                   password='masterkey',
                   charset='UTF8')
