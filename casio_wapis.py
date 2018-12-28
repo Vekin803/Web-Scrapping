@@ -13,59 +13,48 @@ def casio(item):
 
     existe = html.find(containing='Recommended retail price EU', first=True)
     modelo = {}
+    rutaRelojes = "\\\\192.168.1.254\\W\\Multimedia\\Casio\\Relojes"
+    rutaFunciones = "\\\\192.168.1.254\\W\\Multimedia\\Casio\\Funciones"
+    archivoJPG = "{}_wapis.jpg".format(item)
 
     if existe:
         print('{}'.format(item))
-        # Creando la carpeta
-        # try:
-        #     os.mkdir(item)
-        # except:
-        #     print("La carpeta del articulo {} ya existe".format(item))
 
-        if os.path.exists(Path(item)):
-            print("La carpeta del articulo {} ya existe".format(item))
+        if os.path.exists(Path(rutaRelojes + "\\" + item)):
+            print("La carpeta del modelo {} ya existe".format(item))
         else:
-            os.mkdir(item)
+            os.mkdir(rutaRelojes + "\\" + item)
 
 
         # Coger el div general
         bigdiv = html.find('div.rahmen')
 
-        # Sacando imagen del modelos y de las funciones
-            # Imagen del modelos
-             # Generando la ruta para el archivo
-        filename = "{}/{}.jpg".format(item,item)
-
-             # Cogiendo el DIV derecho de la página
+        # Cogiendo el DIV derecho de la página
         side_r = html.find("div > img[alt={}]".format(item), first=True)
 
-             # Selecccionando el link de la imágen y el codificando en base64
+
+        # Sacando imagen del modelo       
+
+            # Selecccionando el link de la imágen y el codificando en base64
         img_link = side_r.attrs['src']
         data = session.get(img_link)
         img_b64 = base64.b64encode(data.content)
         
-             # Crear la imagen a partir del base64 
+            # Crear la imagen a partir del base64 
         # fh = open("imageToSave.png", "wb")
         # fh.write(base64.b64decode(imgcode))
         # fh.close()
 
-             # Creando el archivo de la imagen
-        # try:
-        #     img_file = open(Path(filename), 'wb')
-        #     img_file.write(data.content)
-        #     img_file.close()
-        # except:
-        #     print("La imagen del articulo {} no existe".format(item))
-
-        if os.path.exists(Path(filename)):
-            print("La imagen del articulo {} ya existe".format(item))
+            # Creando el archivo de la imagen
+        if os.path.exists(Path(rutaRelojes + "\\" + item + "\\" + archivoJPG)):
+            print("La imagen del modelo {} ya existe".format(item))
         else:
             try:
-                img_file = open(Path(filename), 'wb')
+                img_file = open(Path(rutaRelojes + "\\" + item + "\\" + archivoJPG), 'wb')
                 img_file.write(data.content)
                 img_file.close()
             except:
-                print("La imagen del articulo {} no existe".format(item))
+                print("La imagen del modelo {} no existe".format(item))
 
         # Recopilando los datos del modelo
              # Referencia
@@ -165,7 +154,7 @@ def casio(item):
         conn = psycopg2.connect(host='192.168.1.252', database='casio', user='postgres', password='Mgv17Watch')
         cur = conn.cursor()
         cur.execute('INSERT INTO reloj (referencia, tipo_reparacion, pila, modulo, categoria, img_url, img_blob) VALUES ( %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (referencia) DO UPDATE SET tipo_reparacion = EXCLUDED.tipo_reparacion, pila = EXCLUDED.pila, modulo = EXCLUDED.modulo, categoria = EXCLUDED.categoria, img_url = EXCLUDED.img_url, img_blob = EXCLUDED.img_blob RETURNING id', 
-                    (modelo['Referencia'], modelo['Tipo'], modelo['Pila'], modelo['Modulo'], modelo['Categoria'], filename, img_b64))
+                    (modelo['Referencia'], modelo['Tipo'], modelo['Pila'], modelo['Modulo'], modelo['Categoria'], archivoJPG, img_b64))
         conn.commit()
         id_modelo = cur.fetchone()[0]
         
@@ -188,11 +177,11 @@ def casio(item):
         # for img in img_tags:
         #     alt_img = img.attrs['alt']
         #     src_img = img.attrs['src']
-        #     func_filename = item + '/funciones/' + alt_img + '.jpg'
+        #     func_archivoJPG = item + '/funciones/' + alt_img + '.jpg'
         #     cur.execute('INSERT INTO imagen_funcion (nombre, link, id_reloj) VALUES ( %s, %s, %s) ON CONFLICT (nombre, id_reloj) DO UPDATE SET link = EXCLUDED.link', 
-        #                 (alt_img, func_filename, id_modelo))
+        #                 (alt_img, func_archivoJPG, id_modelo))
         #     conn.commit()
-        #     func_file = open(func_filename, 'wb')
+        #     func_file = open(func_archivoJPG, 'wb')
         #     try:
         #         func_file.write(urllib.request.urlopen(src_img).read())
         #     except:
