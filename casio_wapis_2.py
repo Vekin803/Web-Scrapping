@@ -20,10 +20,11 @@ from requests_html import HTMLSession
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-urls = {"https://www.css2.casio.de/servicewapis/_details.php?watch=A158WEA-1EF&stamp=&language=es","https://www.css2.casio.de/servicewapis/_details.php?watch=A168WEGA-9EF&stamp=&language=es"}
+urls = {"https://www.css2.casio.de/servicewapis/_details.php?watch=A158WEA-1EF&stamp=&language=es","https://www.css2.casio.de/servicewapis/_details.php?watch=A168WG-9EF&stamp=&language=es"}
 
-driver = webdriver.Firefox()
+driver = webdriver.Chrome()
 for url in urls :
+    # driver = webdriver.Chrome()
     driver.get(url)
     session = HTMLSession()
     r = session.get(driver.current_url, verify=False)

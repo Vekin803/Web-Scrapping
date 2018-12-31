@@ -3,12 +3,17 @@ from requests_html import HTMLSession
 import os
 from pathlib import Path
 import base64
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
+driver = webdriver.Chrome()
 
 def casio(item):
     # Consiguiendo el HTML real
+    url = "https://www.css2.casio.de/servicewapis/_details.php?watch={}&stamp=&language=es".format(item)
+    driver.get(url)
     session = HTMLSession()
-    r = session.get("https://www.css2.casio.de/servicewapis/_details.php?watch='{}'&stamp=&language=es".format(item), verify = False)
+    r = session.get(driver.current_url, verify = False)
     html = r.html
 
     existe = html.find(containing='Recommended retail price EU', first=True)
@@ -185,3 +190,6 @@ def casio(item):
         return modelo
     else:
         return None
+    
+
+
