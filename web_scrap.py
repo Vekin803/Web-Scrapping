@@ -1,5 +1,4 @@
 import fdb
-from casio_wapis import casio
 # from rhythm_b2b import rhythm
 
 # # Conectando a la BBDD
@@ -18,7 +17,7 @@ items = [row[0] for row in result]
 con.close()
 
 
-
+from casio_wapis import casio
 
 for item in items:
 

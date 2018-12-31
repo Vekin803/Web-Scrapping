@@ -23,7 +23,7 @@ def casio(item):
     archivoJPG = "{}_wapis.jpg".format(item)
 
     if existe:
-        print('{}'.format(item))
+        print('Recogiendo datos del modelo {}'.format(item))
 
         if os.path.exists(Path(rutaRelojes + "\\" + item)):
             print("La carpeta del modelo {} ya existe".format(item))
