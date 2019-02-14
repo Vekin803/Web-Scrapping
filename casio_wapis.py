@@ -77,9 +77,12 @@ def casio(item):
 
             # Tipo de Pila
         td_pila = html.find('div > table > tr > td > div.rahmen > table > tr > td', containing='Tipo de pila')
-        slash_pila = td_pila[1].html.split('<br/>')
-        ref_pila = slash_pila[1].replace('</td>', '')
-        modelo['Pila'] = ref_pila
+        try:
+            slash_pila = td_pila[1].html.split('<br/>')
+            ref_pila = slash_pila[1].replace('</td>', '')
+            modelo['Pila'] = ref_pila
+        except:
+            modelo['Pila'] = '-'
 
             # Módulo
         table_modulo = bigdiv[2].find('table > tr > td')
@@ -188,6 +191,7 @@ def casio(item):
         conn.close()
 
         return modelo
+    
     else:
         return None
     
