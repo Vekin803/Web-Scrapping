@@ -43,18 +43,16 @@ for model in modelos:
         funciones[func[0]] = [func[1], func[2]]
     modelos_dict[model[0]]['funciones'] = funciones
 
-# print(modelos_dict['GD-100-1AER'])
 
-
-# # Creando el archivo y la hoja
+# Creando el archivo y la hoja
 timestr = time.strftime("%Y%m%d%H%M%S")
 archivo = xlsxwriter.Workbook(Path('\\\\192.168.1.254\\G\\MGV\\SIRO\\Informacion_wapis\\Excel_Wapis_' + timestr + '.xlsx'))
 hoja = archivo.add_worksheet()
 
-# # Añadiendo estilos
+# Añadiendo estilos
 bold = archivo.add_format({'bold': True})
 
-# # Añadiendo los titulos de las columnas
+# Añadiendo los titulos de las columnas
 hoja.write('A1', 'Referencia', bold)
 hoja.write('B1', 'Modulo', bold)
 hoja.write('C1', 'Tipo', bold)
