@@ -2,7 +2,7 @@ import fdb
 # from rhythm_b2b import rhythm
 
 # Conectando a la BBDD
-con = fdb.connect(dsn='192.168.1.252:W:\\STECCS_MGV_TEST.FDB',
+con = fdb.connect(dsn='192.168.1.252:W:\\STECCS_MGV.FDB',
                   user='sysdba',
                   password='masterkey',
                   charset='UTF8')

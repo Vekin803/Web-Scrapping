@@ -3,11 +3,11 @@ import fdb
 import psycopg2
 import csv
 
-modelo = 'A158WEA-1EF'
+modelo = 'LA690WEA-1EF'
 
 
  # Conexion a la base de datos de Elite
-connect = fdb.connect(dsn='192.168.1.252:W:\\STECCS_MGV_TEST.FDB',
+connect = fdb.connect(dsn='192.168.1.252:W:\\STECCS_MGV.FDB',
                   user='sysdba',
                   password='masterkey',
                   charset='UTF8')
@@ -21,10 +21,10 @@ connect.close()
 descripcion = items[0]
 
 if items[1] == 'REL_CASIO_COLLECTION':
-    categoria = '6,5,4'
+    categoria = '6_5_4'
     proveedor = 'Casio'
     marca = 'Casio'
-    etiquetas = 'reloj,casio,collection'
+    etiquetas = 'reloj_casio_collection'
 
 
 precio_iva = items[2]
@@ -43,8 +43,8 @@ SELECT
 FROM public.reloj r
 JOIN public.reloj_funcion rf ON r.id = rf.id_reloj
 JOIN public.funcion f ON f.id = rf.id_funcion
-WHERE r.referencia = 'A158WEA-1EF'
-""")
+WHERE r.referencia = '{}'
+""".format(modelo))
 funcion = cur.fetchall()
 conn.close()
 
@@ -52,7 +52,7 @@ funciones = ""
 
 for i, func in enumerate(funcion, start=1):
     if i < len(funcion):
-        funciones += func[0] + ":" + func[1] + ":" + "1:0,"
+        funciones += func[0] + ":" + func[1] + ":" + "1:0_"
     else:
         funciones += func[0] + ":" + func[1] + ":" + "1:0"
 
@@ -60,7 +60,7 @@ for i, func in enumerate(funcion, start=1):
 
 
  #Crear el CSV con todos los datos de cada reloj
-with open('eggs.csv', 'w') as csvfile:
+with open('presta.csv', 'w') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=';',
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(['Activo', 'Modelo', 'Categoria', 'Precio IVA', 'ID Impuesto', 'Coste', 'Referencia', 'Ref proveedor', 'Proveedor', 'Marca', 'EAN13', 'Cantidad', 'Descripcion', 'Etiquetas', 'Meta-titulo', 'Meta-keywords', 'Meta-descripcion', 'Url imagen', 'Caracteristicas'])

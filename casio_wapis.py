@@ -16,7 +16,14 @@ def casio(item):
     r = session.get(driver.current_url, verify = False)
     html = r.html
 
-    existe = html.find(containing='Recommended retail price EU', first=True)
+    # Recogiendo datos para saber si el modelo existe
+    # existe = html.find(containing='Recommended retail price EU', first=True)
+    existe_list = html.find(containing='Categoría')
+    existe_html = existe_list[2].html
+    existe_texto = existe_html.split('<br/>')
+    existe = existe_texto[1].replace('</td></tr>','')
+
+
     modelo = {}
     rutaRelojes = "\\\\192.168.1.254\\W\\Multimedia\\Casio\\Relojes"
     rutaFunciones = "\\\\192.168.1.254\\W\\Multimedia\\Casio\\Funciones"
