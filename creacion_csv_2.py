@@ -2,9 +2,15 @@
 import fdb
 import psycopg2
 import csv
+import os
+from pathlib import Path
+from ftplib import FTP
 
-familia = 'REL_CASIO_COLLECTION'
+# familia = 'REL_CASIO_COLLECTION'
 
+ # Preparación para usar el FTP
+ftp = FTP('ftp.mgvwatch.com')
+rutaRelojes = "\\\\192.168.1.254\\G\\MGV\\SIRO\\Marketing\\Fotografias Articulos\\fotos casio kevin\\collection"
 
  # Conexion a la base de datos de Elite
 connect = fdb.connect(dsn='192.168.1.252:W:\\STECCS_MGV.FDB',
@@ -17,8 +23,9 @@ conn = psycopg2.connect(host='192.168.1.252', database='casio', user='postgres',
 cur = conn.cursor()
 
 cursor = connect.cursor()
-result_model = cursor.execute("SELECT A.CODIGO_ARTICULO FROM ARTICULOS A JOIN ALMACENES AL ON (AL.CODIGO_ARTICULO = A.CODIGO_ARTICULO)  WHERE A.FAMILIA = '{}' AND AL.ALMACEN = '02' ORDER BY CODIGO_ARTICULO".format(familia))
-modelos_db = cursor.fetchall()
+# result_model = cursor.execute("SELECT A.CODIGO_ARTICULO FROM ARTICULOS A JOIN ALMACENES AL ON (AL.CODIGO_ARTICULO = A.CODIGO_ARTICULO)  WHERE AL.ALMACEN = '02' AND A.PRE4 != 'WEB' ORDER BY CODIGO_ARTICULO")
+# modelos_db = cursor.fetchall()
+modelos_db = 'A168WA-1YES'
 
 modelos = []
 
@@ -36,6 +43,36 @@ for model in modelos:
         proveedor = 'Casio'
         marca = 'Casio'
         etiquetas = 'reloj_casio_collection'
+    elif items[1] == 'REL_CASIO_BABYG':
+        categoria = '16_5_4'
+        proveedor = 'Casio'
+        marca = 'Casio'
+        etiquetas = 'reloj_casio_babyg'
+    elif items[1] == 'REL_CASIO_DESPERTADO'
+        categoria = '20_5_4'
+        proveedor = 'Casio'
+        marca = 'Casio'
+        etiquetas = 'reloj_casio_despertador'
+    elif items[1] == 'REL_CASIO_EDIFICE'
+        categoria = '14_5_4'
+        proveedor = 'Casio'
+        marca = 'Casio'
+        etiquetas = 'reloj_casio_edifice'
+    elif items[1] == 'REL_CASIO_GSHOCK'
+        categoria = '15_5_4'
+        proveedor = 'Casio'
+        marca = 'Casio'
+        etiquetas = 'reloj_casio_gshock'
+    elif items[1] == 'REL_CASIO_PROTREK'
+        categoria = '17_5_4'
+        proveedor = 'Casio'
+        marca = 'Casio'
+        etiquetas = 'reloj_casio_protrek'
+    elif items[1] == 'REL_CASIO_WAVECEPTOR'
+        categoria = '18_5_4'
+        proveedor = 'Casio'
+        marca = 'Casio'
+        etiquetas = 'reloj_casio_waveceptor'
 
 
     # precio_iva = items[2] 
@@ -64,10 +101,6 @@ for model in modelos:
         else:
             funciones += func[0] + ":" + func[1] + ":" + "1:0"
     
-
-
-
-
 
     modelos_dict[model] = {'Activo': 1,
                            'Modelo': model,
@@ -115,6 +148,11 @@ with open('prestashop.csv', 'w', newline='') as csvfile:
                              modelos_dict[modelo]['Meta descripcion'],
                              modelos_dict[modelo]['URL'],
                              modelos_dict[modelo]['Caracteristicas']])
+
+
+# for model in modelos:
+#     cursor.execute("UPDATE ARTICULOS SET PRE4 = 'WEB' WHERE CODIGO_ARTICULO = '{}'".format(model))
+#     connect.commit()
 
 conn.close()
 connect.close()
